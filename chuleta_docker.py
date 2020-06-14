@@ -77,7 +77,10 @@
 		FROM ubuntu 
 		# es recmendable instalar todo lo necesario en una misma linea por temas de cache
 		# --no-install-recommends sirve para no instalar los paquetes recomendados por apt
-		RUN apt-get update && apt-get install --no-install-recommends figlet -y / openjdk-8-jdk vim ssh
+		RUN apt-get update && apt-get install --no-install-recommends figlet -y \ openjdk-8-jdk vim ssh \
+		    # si se instalan paquetes con apt es recomendable luego  borrar las listas de paquetes ya que solo ocupan espacio
+		    # y no son nececsarias en produccion
+		    && rm -rf /var/lib/apt/lists/*
 		# NOTA: es recomandable no instalar ssh ni vim ni ningun paquete que no sea productivo
 		# ssh deja una brecha de seguridad al permitir conexiones externas
 		# vim ocupa espacio innecesario en el contenedor productivo, cuando la edicion de texto deberia realizarce por medios externos
@@ -139,15 +142,24 @@
 	      - ~/docker/mysql-data:/var/lib/mysql
 	
 	
-
+	# archivo docker-compose.override.yaml
+	# se puede copiar el archivo docker-compose agregandole '.override' para que sobreescriba los parametros del docker-compose
+	# esto sirve para usar los archivos productivos sobreescribiendo las variables que se tengan para hacer pruebas locales
+	# ejemplo, para sobreescribir variables de entorno del anterior manifiesto
+	version: '3.1'
+	services:
+	  wordpress:
+	    environment:
+	      WORDPRESS_DB_USER: user_mysql
+	      WORDPRESS_DB_PASSWORD: password123
+		
+	
 	# bajar imagen de jenkins con alipine linux
 	docker pull jenkins:2.60.3-alpine
 	# bajar imagen de gitlab community edition 
 	docker pull gitlab/gitlab-ce
 	# bajar imagen de rundeck
 	docker pull rundeck/rundeck:3.1.2
-
-	
 	
 	# estadisticas de los contenedores corriendo
 	docker stats
@@ -172,3 +184,11 @@
 	# sirve para depurar los errores desde dentro del contenedor, si no tiene bash se puede usar 'sh'
 	docker run -it -v /ruta_local:/ruta_contenedor --entrypoint=bash nginx
 ### 
+
+
+
+
+
+
+
+
