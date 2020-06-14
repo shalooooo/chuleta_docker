@@ -75,7 +75,22 @@
 	# Docker file
 	vim Dockerfile
 		FROM ubuntu 
-		RUN apt-get update && apt-get install figlet -y
+		# es recmendable instalar todo lo necesario en una misma linea por temas de cache
+		# --no-install-recommends sirve para no instalar los paquetes recomendados por apt
+		RUN apt-get update && apt-get install --no-install-recommends figlet -y / openjdk-8-jdk vim ssh
+		# NOTA: es recomandable no instalar ssh ni vim ni ningun paquete que no sea productivo
+		# ssh deja una brecha de seguridad al permitir conexiones externas
+		# vim ocupa espacio innecesario en el contenedor productivo, cuando la edicion de texto deberia realizarce por medios externos
+		
+		# copiar archivo local dentro del contenedor, siempre es mejor dejar el copiado del codigo de la aplicacion al final del Dockerfile por temas de cache
+		# tambien es recomandable copiar explucisvamente los archivos de la aplicacion, sacar todo aquello que no influya en la ejecucion de la aplicacion
+		COPY /ruta_local/archivo /ruta_contenedor		
+		# trae archivos de rutas remotas (sustituye wget), es recomandable solo usarlo para rutas remotas, para rutas locales use COPY
+		ADD ejemplo.com/archivo /ruta_contenedor
+		
+		# ejecuta aplicacion java
+		CMD ["java", "-jar", "/ruta_app/app.jar"]
+		
 	# construir un contenedor a partir de un docker file
 	docker build -t NOMBRE_IMAGEN:VERSION
 	# muestra comandos ejecutados en la imagen especificada
@@ -84,7 +99,7 @@
 	docker run -d nginx:1.15.7
 	# correr un comando dentro de un contenedor que ya esta corriendo
 	docker exec -it $CONTEINER_ID bash
-	# correr contenedor persistente nginx especificando version y ademas copia index.html a directorio nginx/html dentro del contenedor
+	# correr contenedor persistente nginx especificando version y ademas copia index.html a directorio nginx/html dentro del contenedor, el ':ro' significa read only para que no se pueda reescribir el archivo
 	docker run -v ~/docker/index.html:/usr/share/nginx/html/index.html:ro -d nginx:1.15.7
 	# correr contenedor persistente nginx especificando version y ademas copia index.html a directorio nginx/html dentro del contenedor, ademas apunta el puerto 8080 local al puerto 80 del contenedor
 	docker run -v ~/docker/index.html:/usr/share/nginx/html/index.html:ro -p 8080:80 -d nginx:1.15.7
@@ -101,6 +116,7 @@
 	services:
 	  wordpress:
 	    image: wordpress:php7.2-apache
+	    restart: always # para que se inicie al iniciar la maquina, en casos de reinicios
 	    ports:
 	      - 8080:80
 	    environment:
@@ -113,12 +129,16 @@
 
 	  mysql:
 	    image: mysql:8.0.13
+	    restart: unless-stopped # si se detuvo el servicio manualmente no se vuelve a iniciar en un reinicio
+	    restart: on-failure:10 # si se sobrepasan los 10 errores e intentos de iniciar el contenedor se paran los intentos por iniciarlo
 	    command: --default-authentication-plugin=mysql_native_password
 	    environment:
 	      MYSQL_DATABASE: wordpress
 	      MYSQL_ROOT_PASSWORD: root
 	    volumes:
 	      - ~/docker/mysql-data:/var/lib/mysql
+	
+	
 
 	# bajar imagen de jenkins con alipine linux
 	docker pull jenkins:2.60.3-alpine
@@ -129,5 +149,26 @@
 
 	
 	
-
+	# estadisticas de los contenedores corriendo
+	docker stats
+	
+	# borra todos lo contenedores parados, incluyendo los volumenes parados, las redes e imagenes que no esten en uso por al menos un contenedor
+	docker system prune
+	
+	# inspeccionar un contenedor para obtener sus datos como variables de entorno, ips, volumenes, etc.
+	docker inspect {id|nombre_contenedor}
+	
+	# copiar un archivo desde el entorno actual hacia dentro del contenedor
+	docker cp {nombre_archivo} {id|nombre_contenedor}:/ruta/donde/quieres/que/se/pegue/el/archivo
+	
+	# visualizar las ultimas 10 lineas del log del contenedor
+	docker logs --tail=10 {id|nombre_contenedor}
+	
+	# visualizar las ultimas 50 lineas del log junto con el timestamp de la escritura de esa linea de log
+	docker logs --tail=50 -t {id|nombre_contenedor}
+	
+	# PARA LOS CONTENEDORES QUE NO INICIAN
+	# ejemplo iniciando un contenedor nginx para que nos de una terminal en vez de iniciar el servicio
+	# sirve para depurar los errores desde dentro del contenedor, si no tiene bash se puede usar 'sh'
+	docker run -it -v /ruta_local:/ruta_contenedor --entrypoint=bash nginx
 ### 
