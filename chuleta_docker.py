@@ -185,6 +185,15 @@
 	docker run -it -v /ruta_local:/ruta_contenedor --entrypoint=bash nginx
 ### 
 
+#Eliminar todas las imágenes de docker
+docker rmi $(docker images -q)
+
+#Eliminar todos los contenedores de docker
+docker rm $(docker ps -a -q)
+
+#Un pequeño apunte: si una de los contenedores está en ejecución deberemos usar la opción -f para forzar la eliminación, 
+#o bien detener la ejecución.
+
 
 
 
