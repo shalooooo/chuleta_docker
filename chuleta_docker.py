@@ -194,10 +194,23 @@ docker rm $(docker ps -a -q)
 #Un pequeño apunte: si una de los contenedores está en ejecución deberemos usar la opción -f para forzar la eliminación, 
 #o bien detener la ejecución.
 
+# listar volúmenes del host
+docker volume ls
 
+# listar id de los volúmenes
+docker volume ls -q
 
+# eliminar todos los volúmenes del host
+docker volume rm $(docker volume ls -q)
 
+# crear un nuevo volumen
+docker volume create --name {nombre_volumen}
 
+# inspeccionar Path de volumen en máquina host
+docker volume inspect {nombre_volumen}
+
+# eliminar un volumen especificando su nombre
+docker volume rm {nombre_volumen}
 
 
 
