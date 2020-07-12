@@ -40,38 +40,57 @@
 	dnf list docker-ce --showduplicates | sort -r
 	sudo dnf install docker-ce-<version>
 	sudo dnf install docker-ce-3:18.09.1-3.el7
+
 	# Docker
 	docker -v
+
 	# Desactivar firewall
 	sudo systemctl disable firewalld
 	sudo systemctl enable --now docker
 	sudo usermod -aG docker $USER
+
+        #validar demonio de docker corriendo
+        ps-fea | creo docker
+
 	# muestra contenedores corriendo 
 	docker ps
+
 	# corre el contenedor hello-world
 	docker run hello-world
+
 	# descargar imagen del registro publico de docker
 	docker pull alpine
+
 	# descarga imagen especificando version
 	docker pull alpine:3.7
+
 	# correr contenedor ejecutando un comando dentro de el
 	docker run alpine ls -l
+
 	# correr contenedor con terminal interactiva
 	docker run -it alpine sh
+
 	# correr un comando dentro de un contenedor que ya se encuentre corriendo
 	docker exec -it $ID_CONTENEDOR sh
+
 	# correr un contenedor ubuntu y obtener un shell
 	docker run -ti ubuntu /bin/bash
+
 	# visualizar todos los contenedores incluyendo los muertos
 	docker ps -a
+
 	# crear imagen a partir de un contenedor u otras imagenes
 	docker commit $ID_CONTENEDOR
+
 	# listar imagenes de contenedores docker
 	docker image ls
+
 	# taguear imagen docker
 	docker image tag $ID_IMAGEN nombre_imagen
+
 	# taguear imagen docker con version
 	docker image tag $ID_IMAGEN nombre_imagen:version
+
 	# Docker file
 	vim Dockerfile
 		FROM ubuntu 
@@ -96,24 +115,34 @@
 		
 	# construir un contenedor a partir de un docker file
 	docker build -t NOMBRE_IMAGEN:VERSION
+
 	# muestra comandos ejecutados en la imagen especificada
 	docker image history ID_IMAGEN
+
 	# corre un contenedor con nginx version 1.15.7 y lo deja corriendo como daemon
 	docker run -d nginx:1.15.7
+
 	# correr un comando dentro de un contenedor que ya esta corriendo
 	docker exec -it $CONTEINER_ID bash
+
 	# correr contenedor persistente nginx especificando version y ademas copia index.html a directorio nginx/html dentro del contenedor, el ':ro' significa read only para que no se pueda reescribir el archivo
 	docker run -v ~/docker/index.html:/usr/share/nginx/html/index.html:ro -d nginx:1.15.7
+
 	# correr contenedor persistente nginx especificando version y ademas copia index.html a directorio nginx/html dentro del contenedor, ademas apunta el puerto 8080 local al puerto 80 del contenedor
 	docker run -v ~/docker/index.html:/usr/share/nginx/html/index.html:ro -p 8080:80 -d nginx:1.15.7
+
 	# corre un contenedor mysql 8.0.13 y añade la variable de entorno MYSQL_ROOT_PASSWORD especificando la clave del usuario root del servidor
 	docker run -e MYSQL_ROOT_PASSWORD=miclave -d mysql:8.0.13
+
 	# corre un contenedor igual al anterior, ademas mapea un volumen desde la carpeta /mysql-data local hasta la carpeta /var/lib/mysql del contenedor
 	docker run -e MYSQL_ROOT_PASSWORD=miclave -v ~/mysql-data:/var/lib/mysql -d mysql:8.0.13
+
 	# modificar archivo docker-compose.yaml
 	vi docker-compose.yaml
+
 	# leer el archivo docker-compose.yaml y ejecutar comandos para crear contenedores y ambiente especificado en el archivo, ademas dejarlo como daemon
 	docker-compose up -d
+
 	# archivo docker-compose.yaml
 	version: '3.1'
 	services:
