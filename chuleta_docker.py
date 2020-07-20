@@ -269,4 +269,39 @@ docker network inspect
 --link {nombre del contenedor} 
 
 
+### COMPOSE ###
+
+# Inicia los microservicios definidos en docker-compose.yml.
+docker-compose up
+
+# Inicia los microservicios definidos en docker-compose.yml y correr los contenedores en el background.
+docker-compose up -d
+
+# Construye desde 0 los microservicios si se realizó algún cambio.
+docker-compose build
+
+# Muestra todos los logs de todos los servicios.
+docker-compose logs
+
+# Muestra los logs de un servicio en particular.
+docker-compose logs {nombre del microservicio}
+
+# Permite eliminar un servicio, siempre y cuando este se encuentre detenido.
+docker-compose rm {microservicio}
+
+# Permite detener todos los microservicios que se encuentren en ejecución.
+docker-compose stop
+
+# Detiene todos los microservicios y los elimina que se encuentren en ejecución.
+docker-compose down
+
+# Muestra un menú de ayuda con todos los comandos de docker-compose
+docker-compose help
+
+# Permite usar un archivo de configuración de docker-compose.yml con otro nombre.
+docker-compose -f {docker-compose}.yml {comando}
+
+# Permite escalar servicios (mapeados en puertos distintos).
+docker-compose scale {servicio}={instancias de escalar}
+
 
