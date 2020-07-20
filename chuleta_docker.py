@@ -242,4 +242,31 @@ docker volume inspect {nombre_volumen}
 docker volume rm {nombre_volumen}
 
 
+### REDES ###
+
+# Permite crear una red.
+docker network create {nombre de la red} 
+
+# Permite conectar un contenedor de una red.
+docker network connect 
+
+# Lista las redes existentes.
+docker network ls 
+
+# Permite eliminar una red.
+docker network rm 
+
+# Permite desconectar un contenedor de una red.
+docker network disconnect 
+
+# Muestra información de interés sobre las redes de Docker.
+docker network inspect 
+
+# Utilizar esta bandera al crear un contenedor permite especificar la red en la cual estará dicho contenedor.
+--net {nombre de la red} 
+
+# Permite enlazar un contenedor a una red y así acceder a ellos por medio de su nombre.
+--link {nombre del contenedor} 
+
+
 
