@@ -304,4 +304,8 @@ docker-compose -f {docker-compose}.yml {comando}
 # Permite escalar servicios (mapeados en puertos distintos).
 docker-compose scale {servicio}={instancias de escalar}
 
+# Guardar en un archivo una imagen de Docker
+docker save $ID_IMAGEN > nombre_imagen.tar
 
+# Importar una imagen de Docker desde un archivo
+docker load < nombre_imagen.tar
