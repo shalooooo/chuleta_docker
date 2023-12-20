@@ -55,6 +55,9 @@
 	# muestra contenedores corriendo 
 	docker ps
 
+	# muestra los contenedores mas clean
+	docker ps --format "table {{.ID}}\t{{.Names}}\t{{.State}}\t{{.RunningFor}}\t{{.Status}}\t{{.Ports}}"
+
 	# corre el contenedor hello-world
 	docker run hello-world
 
